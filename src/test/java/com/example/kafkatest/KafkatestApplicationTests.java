@@ -10,4 +10,5 @@ class KafkatestApplicationTests {
 	void contextLoads() {
 	}
 
+	//TODO add test with retry when app started and kafka message was sent, but wasn't consumed properly
 }

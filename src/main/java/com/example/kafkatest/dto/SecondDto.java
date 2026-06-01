@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Dto {
+public class SecondDto {
 
-    String clientId;
-    String message;
+    String userId;
+    String userData;
 }

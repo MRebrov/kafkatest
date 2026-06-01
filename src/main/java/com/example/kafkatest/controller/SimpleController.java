@@ -1,6 +1,7 @@
 package com.example.kafkatest.controller;
 
 import com.example.kafkatest.dto.Dto;
+import com.example.kafkatest.dto.SecondDto;
 import com.example.kafkatest.service.kafka.producer.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,13 @@ public class SimpleController {
 
     @PostMapping("/send")
     public ResponseEntity<HttpStatus> send(@RequestBody Dto dto) {
+        kafkaProducer.produceDto(dto);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
-        kafkaProducer.produce(dto);
+    @PostMapping("/sendSecond")
+    public ResponseEntity<HttpStatus> sendSecond(@RequestBody SecondDto secondDto) {
+        kafkaProducer.produceSecondDto(secondDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
