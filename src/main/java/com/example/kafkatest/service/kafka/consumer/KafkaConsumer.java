@@ -10,17 +10,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
-    @KafkaListener(topics = {"test-topic", "test-topic-second"})
-    public void consume(Object obj) {
-        log.info("Received message: {}", obj);
-        if (obj instanceof Dto dto) {
+    @KafkaListener(topics = {"test-topic"})
+    public void consumeDto(Dto dto) {
             log.info("Received dto: {}", dto);
         }
-        if (obj instanceof SecondDto secondDto) {
+
+    @KafkaListener(topics = {"test-topic-second"})
+    public void consumeSecondDto(SecondDto secondDto) {
             log.info("Received secondDto: {}", secondDto);
         }
-        else {
-            log.info("Received unknown type: {}", obj.getClass());
-        }
-    }
 }
