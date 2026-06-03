@@ -12,11 +12,11 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = {"test-topic"})
     public void consumeDto(Dto dto) {
-            log.info("Received dto: {}", dto);
-        }
+        log.info("Received dto: {}", dto);
+    }
 
     @KafkaListener(topics = {"test-topic-second"})
     public void consumeSecondDto(SecondDto secondDto) {
-            log.info("Received secondDto: {}", secondDto);
-        }
+        log.info("Received secondDto: {}", secondDto);
+    }
 }

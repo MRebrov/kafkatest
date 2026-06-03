@@ -3,6 +3,7 @@ spring:
     name: kafkatest
 
   kafka:
+    retry-topic-enabled: true
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
