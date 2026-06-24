@@ -20,11 +20,13 @@ public class KafkaConsumerConfig {
 
     @Bean
     public <V> ConcurrentKafkaListenerContainerFactory<String, V> kafkaListenerContainerFactory(
-            ConsumerFactory<String, V> consumerFactory
+            ConsumerFactory<String, V> consumerFactory,
+            DefaultErrorHandler errorHandler
     ) {
         ConcurrentKafkaListenerContainerFactory<String, V> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setConsumerFactory(consumerFactory);
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
