@@ -1,35 +1,45 @@
 package com.example.kafkatest.service.kafka.producer;
 
+import com.example.kafkatest.configuration.KafkaTopics;
 import com.example.kafkatest.dto.Dto;
 import com.example.kafkatest.dto.SecondDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class KafkaProducer {
 
-    @Autowired
-    private KafkaTemplate<String, Dto> kafkaTemplateDto;
+    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTopics kafkaTopics;
 
-    @Autowired
-    private KafkaTemplate<String, SecondDto> kafkaTemplateSecondDto;
+    public KafkaProducer(KafkaTopics kafkaTopics, KafkaTemplate<String, Object> kafkaTemplate) {
+        this.kafkaTopics = kafkaTopics;
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     public void produceDto(Dto dto) {
-        String topicName = "test-topic";
-        kafkaTemplateDto.setDefaultTopic(topicName);
-        kafkaTemplateDto.send(MessageBuilder.withPayload(dto)
-                .setHeader(KafkaHeaders.KEY, dto.getClientId())
-                .build());
+        String topicName = kafkaTopics.topic1();
+        send(topicName, dto.getClientId(), dto);
     }
 
     public void produceSecondDto(SecondDto secondDto) {
-        String topicName = "test-topic-second";
-        kafkaTemplateSecondDto.setDefaultTopic(topicName);
-        kafkaTemplateSecondDto.send(MessageBuilder.withPayload(secondDto)
-                .setHeader(KafkaHeaders.KEY, secondDto.getUserId())
-                .build());
+        String topicName = kafkaTopics.topic2();
+        send(topicName, secondDto.getUserId(), secondDto);
+    }
+
+    private <T> void send(String topicName, String key, T dto) {
+        kafkaTemplate.send(MessageBuilder.withPayload(dto)
+                        .setHeader(KafkaHeaders.KEY, key)
+                        .setHeader(KafkaHeaders.TOPIC, topicName)
+                        .build())
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("Failed to send event", ex);
+                    }
+                });
     }
 }

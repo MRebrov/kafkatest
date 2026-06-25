@@ -11,6 +11,10 @@ spring:
       properties:
         enable.idempotence: true
         retry.backoff.ms: 1000
+      topics:
+        topic1: topic1
+        topic2: topic2
+        topic3: topic3
     consumer:
       enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
