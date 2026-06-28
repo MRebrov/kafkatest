@@ -30,7 +30,7 @@ class KafkatestApplicationTests {
                 .doThrow(new MessagingException("EXCEPTION"))
                 .doCallRealMethod()
                 .when(consumer)
-                .consumeDto(any());
+                .consumeDto(any(), any());
 
         producer.produceDto(new Dto("CLIENT-TEST-ID", "TEST-MESSAGE"));
 
@@ -38,7 +38,7 @@ class KafkatestApplicationTests {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(() ->
                         verify(consumer, times(3))
-                                .consumeDto(any())
+                                .consumeDto(any(), any())
                 );
     }
 }
