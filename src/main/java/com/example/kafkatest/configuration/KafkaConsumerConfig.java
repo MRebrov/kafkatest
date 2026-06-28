@@ -1,6 +1,9 @@
 package com.example.kafkatest.configuration;
 
+import com.example.kafkatest.entity.KafkaDltRecord;
+import com.example.kafkatest.repository.KafkaDltRepository;
 import com.fasterxml.jackson.core.JsonParseException;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,8 +37,21 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    <V> DefaultErrorHandler errorHandler(KafkaTemplate<String, V> kafkaTemplate) {
-        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate);
+    <V> DefaultErrorHandler errorHandler(KafkaTemplate<String, V> kafkaTemplate, KafkaDltRepository dltRepository) {
+        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate) {
+
+            @Override
+            public void accept(ConsumerRecord<?, ?> record, Exception exception) {
+                KafkaDltRecord dltRecord = new KafkaDltRecord();
+                dltRecord.setTopic(record.topic());
+                dltRecord.setPartitionId(record.partition());
+                dltRecord.setOffsetValue(record.offset());
+                dltRecord.setPayload(record.value() != null ? record.value().toString() : null);
+                dltRecord.setExceptionMessage(exception.getCause() != null ? exception.getCause().getMessage() : exception.getMessage());
+
+                dltRepository.save(dltRecord);
+            }
+        };
         var errorHandler = new DefaultErrorHandler(recoverer, new FixedBackOff(100L, 2));
 
         errorHandler.addNotRetryableExceptions(

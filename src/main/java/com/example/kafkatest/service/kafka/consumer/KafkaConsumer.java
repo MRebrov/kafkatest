@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
-    @KafkaListener(topics = {"topic1"})
+    @KafkaListener(topics = {"${spring.kafka.producer.topics.topic1}"})
     public void consumeDto(Dto dto, Acknowledgment acknowledgment) {
         log.info("Received dto: {}", dto);
         acknowledgment.acknowledge();
     }
 
-    @KafkaListener(topics = {"topic2"})
+    @KafkaListener(topics = {"${spring.kafka.producer.topics.topic2}"})
     public void consumeSecondDto(SecondDto secondDto, Acknowledgment acknowledgment) {
         log.info("Received secondDto: {}", secondDto);
         acknowledgment.acknowledge();

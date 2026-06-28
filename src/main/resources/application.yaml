@@ -21,3 +21,16 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: test-group-id
       properties.spring.json.trusted.packages: "*"
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/kafkatest
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate.ddl-auto: update
+    properties.hibernate:
+      default_schema: public
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      temp.use_jdbc_metadata_defaults: false
+    show-sql: true
